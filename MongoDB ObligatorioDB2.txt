@@ -1,0 +1,82 @@
+Use DeviceRepair
+
+-- 7. Como se sabe, la empresa de servicio técnico gestiona reparaciones de dispositivos
+--electrónicos y su base de datos en SQL Server (DeviceService) maneja información
+--estructurada sobre empleados, productos y reparaciones en curso.
+--Sin embargo, necesitan almacenar un historial detallado de cada reparación,
+--incluyendo:
+--a. Eventos y cambios de estado de la reparación (ejemplo: "Se cambió una pieza",
+--"Se realizó prueba funcional").
+--b. Notas de los técnicos sobre el diagnóstico y acciones tomadas.
+--c. Imágenes o documentos adjuntos relacionados con la reparación (ejemplo:
+--fotos de fallas, informes de pruebas).
+--Dado que estos datos son altamente flexibles y varían entre reparaciones, se decide
+--almacenarlos en MongoDB, mientras que la estructura transaccional sigue en SQL
+--Server.
+--Cree una estructura en MongoDB para esta realidad, con dicha estructura el usuario
+--debe poder resolver por lo menos los siguientes escenarios:
+--a. Dado un IdRepara, queremos ver todos los eventos asociados a esa reparación,
+--incluyendo las notas y fechas de cada acción realizada.
+--b. Queremos encontrar todas las reparaciones donde en los eventos haya una
+--referencia a "placa", por ejemplo, para identificar equipos con problemas en la
+--placa base.
+--c. Queremos recuperar todas las reparaciones donde se han adjuntado imágenes del
+--proceso de reparación.
+--d. Queremos saber cuántas reparaciones han pasado por una acción específica,
+--como "Reemplazo de pieza", para evaluar la frecuencia de este tipo de intervención.
+
+ {
+  "_id": ObjectId("..."),
+  "idRepara": 1, 
+  "eventos": [
+    {
+      "fecha": ISODate("2025-06-05T10:30:00Z"),
+      "accion": "Se cambió una pieza",
+      "notas": "Se reemplazó el módulo de WiFi que presentaba cortocircuito.",
+      "adjuntos": [
+        {
+          "tipo": "imagen",
+          "url": "https://cdn.tuempresa.com/reparaciones/12345/img1.jpg"
+        },
+        {
+          "tipo": "documento",
+          "url": "https://cdn.tuempresa.com/reparaciones/12345/diagnostico.pdf"
+        }
+      ]
+    },
+    {
+      "fecha": ISODate("2025-06-05T15:00:00Z"),
+      "accion": "Se realizó prueba funcional",
+      "notas": "El dispositivo respondió correctamente a las pruebas de red.",
+      "adjuntos": []
+    }
+  ]
+}
+
+
+a. Ver todos los eventos de una reparación :
+db.HistoricoReparacion.findOne(
+  { idRepara: 1 },
+  { _id: 0, eventos: 1 }
+)
+
+b. Buscar reparaciones con eventos que mencionan "placa"
+db.HistoricoReparacion.find(
+  { "eventos.notas": /placa/i }
+)
+
+
+c. Reparaciones que tienen al menos una imagen adjunta:
+db.HistoricoReparacion.find(
+  {
+    "eventos.adjuntos.Tipo": "imagen" 
+    
+  }
+)
+
+d. Contar cuántas reparaciones incluyeron la acción "Reemplazo de pieza":
+db.HistoricoReparacion.countDocuments(
+  { 
+	"eventos.accion": "Reemplazo de pieza" 
+}
+)

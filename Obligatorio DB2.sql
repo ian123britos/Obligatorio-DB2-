@@ -1,13 +1,12 @@
+
+
  
-
-
 CREATE DATABASE DeviceRepair
 GO
 
 USE DeviceRepair
 GO
-
-
+ 
 CREATE TABLE Empleado (
 IdEmp INT IDENTITY PRIMARY KEY not null, 
 NomEmp VARCHAR (30) not null, 
@@ -87,22 +86,23 @@ FchEliminacion DATETIME DEFAULT GETDATE()
 INSERT INTO Empleado (NomEmp, FchNacEmp, SueldoEmp, TipoEmp)
 VALUES 
 ( 'Lucia', '1990-03-15', 22000, 'T'),
-( 'Carlos', '1987-07-20', 21000, 'C'),
-( 'Mateo', '1992-01-10', 23000, 'T'),
+( 'Carlos', '1987-07-20', 22000, 'C'),
+( 'Mateo', '1992-01-10', 22999, 'T'),
 ( 'Laura', '1989-11-05', 25000, 'C'),
-( 'Sofia', '1991-06-30', 24000, 'T'),
-( 'Andres', '1986-09-12', 20000, 'C');
+( 'Sofia', '1991-06-30', 14999, 'T'),
+( 'Andres', '1986-09-12', 20000, 'C'),
+( 'Juan', '1991-06-30', 10000, 'T');
 
 
 
 INSERT INTO Producto (Dscprod, StkProd, CostoProd)
 VALUES 
-('ProductoA', 12, 120),
+('ProductoA', 12, 300),
 ('ProductoB', 18, 180),
 ('ProductoC', 25, 250),
 ('ProductoD', 8, 80),
 ('ProductoE', 14, 140),
-('ProductoF', 20, 200);
+('ProductoF', 5, 400);
 
 
 
@@ -121,12 +121,16 @@ INSERT INTO Unidad (NumSerie, IdProd, FchFab, FchVhasta) VALUES
 
 INSERT INTO Repara (NumSerie, IdProd, IdEmp, FchRepara, CostoRepara, IdEmpQA)
 VALUES 
-('SN00000001', 1, 1, '2023-01-15', 300, 2),
+('SN00000001', 1, 1, '2023-01-15', 300, null),
 ('SN00000002', 2, 1, '2023-02-20', 190, 2),
-('SN00000003', 3, 1, '2023-03-25', 310, 2),
-('SN00000004', 4, 1, '2023-04-10', 150, 2),
-('SN00000005', 5, 1, '2023-05-05', 330, NULL), -- Sin QA
-('SN00000002', 2, 1, '2023-06-01', 190, 2),
-('SN00000006', 6, 1, '2023-06-01', 100, 2);
+('SN00000003', 3, 3, '2023-03-25', 310, null),
+('SN00000004', 4, 1, '2023-04-10', 90, 2),
+('SN00000005', 5, 5, '2023-05-05', 330, NULL),
+('SN00000002', 2, 1, '2023-06-01', 190, 4),
+('SN00000006', 6, 5, '2023-06-01', 100, 6),
+('SN00000003', 3, 1, '2023-04-25', 310, null),
+('SN00000005', 5, 1, '2023-06-05', 330, NULL) ,
+('SN00000006', 6, 1, '2023-07-01', 100, 6);
+
 
 

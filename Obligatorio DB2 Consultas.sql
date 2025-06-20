@@ -23,10 +23,10 @@ order by CantidadReparacionesRealizadas DESC
 
 --c. Muestra datos del producto y costo total de reparaciones por producto,
 --mostrando solo los productos con un costo total superior a $200.
-select DISTINCT p.IdProd,sum(r.CostoRepara)as SumaTotal
+select DISTINCT p.IdProd,p.Dscprod,p.StkProd,sum(r.CostoRepara)as SumaTotal
 from Producto p
 INNER JOIN Repara r ON r.IdProd = p.IdProd
-group by p.IdProd,r.CostoRepara
+group by p.IdProd,r.CostoRepara,p.Dscprod,p.StkProd
 HAVING SUM(r.CostoRepara) > 200
 
 
@@ -53,20 +53,19 @@ order by count(IdProd) desc)
 select e.IdEmp ,e.NomEmp,e.TipoEmp,e.SueldoEmp,
 CASE 
   WHEN e.SueldoEmp < 15000 THEN 'Bajo' 
-  WHEN e.SueldoEmp BETWEEN 15000 AND 23000 THEN 'Medio'
-  WHEN e.SueldoEmp > 23000 THEN 'Alto'
+  WHEN e.SueldoEmp BETWEEN 15000 AND 22999 THEN 'Medio'
+  WHEN e.SueldoEmp >= 23000 THEN 'Alto'
 END AS ClasificacionSalarial,
 CASE 
-   WHEN E.SueldoEmp > 23000 THEN 'Senior'
-   WHEN E.SueldoEmp BETWEEN 15000 AND 23000 THEN 'Experimentado'
+   WHEN E.SueldoEmp >= 23000 THEN 'Senior'
+   WHEN E.SueldoEmp BETWEEN 15000 AND 22999 THEN 'Experimentado'
    ELSE 'Junior'
 END AS NivelSalarial, COUNT(R.IdRepara)AS CantidadReparaciones
 from Empleado e
 left join Repara r on r.IdEmp = e.IdEmp
 GROUP BY e.IdEmp,e.NomEmp,e.TipoEmp,e.SueldoEmp
 ORDER BY e.SueldoEmp DESC,CantidadReparaciones DESC;
-select*from Empleado
-select * from Repara
+
 
 --f. Muestra el costo total de reparaciones por empleado y un resumen general.
 select r.IdEmp,e.NomEmp,COUNT(r.CostoRepara) as cantidadReparaciones, sum(r.CostoRepara) as CostoTotal
@@ -77,9 +76,10 @@ group by r.IdEmp,e.NomEmp
 
 --g. Muestra los datos de los Empleados Técnicos que repararon todos los
 --productos.
-select e.IdEmp
+select e.IdEmp,e.FchNacEmp,e.NomEmp,e.SueldoEmp,e.TipoEmp
 from Empleado e
 inner join Repara r on r.IdEmp = e.IdEmp
 where TipoEmp = 'T'
-group by e.IdEmp
+group by e.IdEmp,e.FchNacEmp,e.NomEmp,e.SueldoEmp,e.TipoEmp
 HAVING COUNT(DISTINCT(r.IdProd))=(SELECT COUNT(IdProd) FROM Producto)
+
