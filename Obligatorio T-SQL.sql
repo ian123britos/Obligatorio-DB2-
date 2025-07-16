@@ -111,6 +111,12 @@ BEGIN
  i.StsRepara in ('Terminado'  , 'Cancelado');
 END;
 
+update Repara
+set StsRepara = 'Terminado' 
+where IdRepara = 6
+
+select*from HistoricoReparacion
+
 --b. Crea un disparador llamado trg_PrevenirEliminacionReparaciones, que impida
 --la eliminación de registros en la tabla Repara si la reparación tiene el estado
 --"Terminado" o "En testing".
@@ -147,7 +153,9 @@ DELETE FROM Repara
 WHERE IdRepara in (select IdRepara from deleted)
 END;
 
-
+delete Repara where IdRepara = 6
+select*from Repara
+select*from HistoricoEliminacionReparaciones
 --la tabla deleted es la tupla anterior al cambio
 --y la tabla inxserted es la tupla despues del cambio
 
